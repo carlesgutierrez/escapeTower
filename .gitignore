@@ -1,3 +1,11 @@
+*.xcodeproj
+example*/bin/data
+example*/bin/libs/
+example*/bin/*
+!example*/bin/data/.gitkeep
+!example*/bin/data/*.png
+
+
 #########################
 # openFrameworks patterns
 #########################
@@ -10,7 +18,7 @@ libs/openFrameworksCompiled/lib/*/*
 !libs/openFrameworksCompiled/lib/*/.gitkeep
 
 # apothecary
-scripts/apothecary
+scripts/apothecary/build
 
 # rule to avoid non-official addons going into git
 # see addons/.gitignore
@@ -19,11 +27,6 @@ addons/*
 # rule to avoid non-official apps going into git
 # see apps/.gitignore
 apps/*
-
-# rule to ignore compiled / downloaded libs
-/libs/*
-!/libs/openFrameworks
-!/libs/openFrameworksCompiled
 
 # also, see examples/.gitignore
 
@@ -34,14 +37,8 @@ apps/*
 [Bb]uild/
 [Oo]bj/
 *.o
-examples/**/[Dd]ebug*/
-examples/**/[Rr]elease*/
-examples/**/gcc-debug/
-examples/**/gcc-release/
-tests/**/[Dd]ebug*/
-tests/**/[Rr]elease*/
-tests/**/gcc-debug/
-tests/**/gcc-release/
+[Dd]ebug*/
+[Rr]elease*/
 *.mode*
 *.app/
 *.pyc
@@ -76,26 +73,14 @@ xcuserdata
 *.pdb
 *.ilk
 *.aps
-*.opendb
 ipch/
+*.db
+*.opendb
 
 # Eclipse
 .metadata
 local.properties
 .externalToolBuilders
-
-# Android Studio
-.idea
-.gradle
-gradle
-gradlew
-gradlew.bat
-
-# QtCreator
-*.qbs.user
-*.pro.user
-*.pri
-
 
 #########################
 # operating system
@@ -113,7 +98,6 @@ gradlew.bat
 *~.nib
 # Thumbnails
 ._*
-examples/ios/**/mediaAssets
 
 # Windows
 # Windows image file caches
@@ -125,12 +109,14 @@ Desktop.ini
 .csettings
 /libs/openFrameworksCompiled/project/android/paths.make
 
-# Android Studio
-*.iml
-
 #########################
 # miscellaneous
 #########################
 
 .mailmap
-/apps*/
+DerivedData
+Makefile
+config.make
+openFrameworks-Info.plist
+Project.xcconfig
+/libs/imgui-1.75
