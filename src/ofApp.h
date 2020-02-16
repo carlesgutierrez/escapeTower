@@ -16,6 +16,12 @@
 
 #define MIDIIN
 
+//osc
+#include "ofxOsc.h"
+
+// listening port
+#define PORT 33333
+
 class ofApp : public ofBaseApp, public ofxMidiListener{
 
 	public:
@@ -83,8 +89,10 @@ class ofApp : public ofBaseApp, public ofxMidiListener{
 		int numEnemies = 3;
 		int numBonus = 2;
 
-		int numActiveUsers = 1;
-		characterClass mySnake;
+		int numActiveUsers = 3;
+        vector<characterClass> mySnakes;
+		//TODO
+        //characterClass mySnake;
 
 		doorClass myDoor;
 		
@@ -120,7 +128,10 @@ class ofApp : public ofBaseApp, public ofxMidiListener{
     std::vector<ofxMidiMessage> midiMessages;
     std::size_t maxMessages = 10; //< max number of messages to keep track of
 #else
-
 #endif
+    
+    //osc
+    void updateOSCReceive();
+    ofxOscReceiver receiver;
 
 };

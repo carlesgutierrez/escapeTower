@@ -40,7 +40,12 @@ public:
 
 	////
 	ofColor colorEnergy = ofColor::green;
-	ofColor colorSnake = ofColor::cyan;
+    
+	ofColor colorSnake1 = ofColor::cyan;
+    ofColor colorSnake2 = ofColor::magenta;
+    ofColor colorSnake3 = ofColor::yellow;
+    //ofColor colorSnake4 = ofColor::cyan;
+    
 	ofColor colorEnemy = ofColor::red;
 
 	int updateTimerPosition(int incMillis) {
@@ -101,7 +106,16 @@ public:
 
 		}
 		else if (pointsDamage == 0) { // neutral character..
-			myColor = colorSnake; // ofColor colorEnergia ofColor::cyan; //blue, blueSteel, darkBlue
+            if(id == 0){
+                myColor = colorSnake1;
+            }
+            else if(id == 1){
+                myColor = colorSnake2;
+            }
+            else if(id == 2){
+                myColor = colorSnake3;
+            }
+			///myColor = colorSnake; // ofColor colorEnergia ofColor::cyan; //blue, blueSteel, darkBlue
 			type = CHAR_SNAKE; // personaje
 		}
 		else {
@@ -128,18 +142,18 @@ public:
 		
 		if (idColor == 1) {
 			colorEnergy = ofColor::green;
-			colorSnake = ofColor::cyan;
+			///colorSnake = ofColor::cyan;
 			colorEnemy = ofColor::red;
 			
 		}
 		else if (idColor == 2) {
 			colorEnergy = ofColor::lightSeaGreen;
-			colorSnake = ofColor::cadetBlue;
+			///colorSnake = ofColor::cadetBlue;
 			colorEnemy = ofColor::paleVioletRed;
 		}
 		else if (idColor == 3) {
 			colorEnergy = ofColor::yellow;
-			colorSnake = ofColor::violet;
+			///colorSnake = ofColor::violet;
 			colorEnemy = ofColor::orangeRed;
 		}
 
@@ -149,7 +163,16 @@ public:
 			cout << "CHAR_BONUS " << type << " idChar =" << id << " myColor = " << myColor << endl;
 		}
 		else if (type == CHAR_SNAKE) { // neutral character..
-			myColor = colorSnake; // ofColor colorEnergia ofColor::cyan; //blue, blueSteel, darkBlue
+            if(id == 0){
+                myColor = colorSnake1;
+            }
+            else if(id == 1){
+                myColor = colorSnake2;
+            }
+            else if(id == 2){
+                myColor = colorSnake3;
+            }
+            ///myColor = colorSnake; // ofColor colorEnergia ofColor::cyan; //blue, blueSteel, darkBlue
 			cout << "CHAR_SNAKE =" << type << " idChar =" << id << " myColor = " << myColor << endl;
 		}
 		else if(type == CHAR_ENEMY){
@@ -167,7 +190,7 @@ public:
 			//Update X position every X millis()
 
 			if (ofGetElapsedTimeMillis() - lastUpdatePositionTime > updatePositionTime) {
-				udpdatePosition(1, 0); // update a new obligatory movement.. For now 1 by 1 right
+				udpdatePosition(3, 0); // update a new obligatory movement.. For now 1 by 1 right
 				lastUpdatePositionTime = ofGetElapsedTimeMillis();
 				if (statusCharacter == 1) {
 					cout << "statusCharacter 1. You win!!" << endl;
@@ -250,6 +273,13 @@ public:
 			//cout << "new timer -> updatePositionTime = " << updatePositionTime << endl;
 		}
 	}
+    
+    //------------------------------------
+    void moveToYPos(float pos){
+        int auxY = ofMap(pos, 0, 1, 0, 33);
+        position.y = auxY;
+        //cout << "posY raw" << pos << "position.y" << position.y << endl;
+    }
 
 	//------------------------------------
 	void movePosUpByTheFace() {

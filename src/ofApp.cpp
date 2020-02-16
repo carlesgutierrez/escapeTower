@@ -5,7 +5,7 @@
 void ofApp::setupMidi() {
 	// print input ports to console
 	midiIn.listInPorts();
-	/*
+	
 	// open port by number (you may need to change this)
 	midiIn.openPort(1);
 	//midiIn.openPort("IAC Pure Data In");	// by name
@@ -20,7 +20,7 @@ void ofApp::setupMidi() {
 
 	// print received messages to the console
 	midiIn.setVerbose(true);
-	*/
+	
 }
 
 //--------------------------------------------------------------
@@ -130,6 +130,10 @@ void ofApp::setup() {
 #else
 
 #endif
+    
+    // listen on the given port
+    ofLog() << "listening for osc messages on port " << PORT;
+    receiver.setup(PORT);
 
 }
 
@@ -138,13 +142,14 @@ void ofApp::resetGame() {
 
 	myEnemies.clear();
 	myBonus.clear();
+    mySnakes.clear();
 
 
 	for (int i = 0; i < numEnemies; i++) {
 		//myEnemies
 		myEnemies.push_back(characterClass());
 		myEnemies[i].setup(i, int(ofRandom(0, numWindowsPerFloor)), int(ofRandom(0, numFloors)), widthLedWindow, heightFloor, -3, 1, numFloors, numWindowsPerFloor);
-		cout << "Enemies => Pos X =" << myEnemies[i].position.x << " Pos Y =" << myEnemies[i].position.y << endl;
+		//cout << "Enemies => Pos X =" << myEnemies[i].position.x << " Pos Y =" << myEnemies[i].position.y << endl;
 	}
 
 	for (int i = 0; i < numBonus; i++) {
@@ -152,29 +157,47 @@ void ofApp::resetGame() {
 		myBonus.push_back(characterClass());
 		//TODO Check Filled Spaces First... If Ocupied then Change to another location. In godot That might be setup fixed positions per level
 		myBonus[i].setup(i, int(ofRandom(0, numWindowsPerFloor)), int(ofRandom(0, numFloors)), widthLedWindow, heightFloor, 3, 0, numFloors, numWindowsPerFloor);
-		cout << "myBonus => Pos X =" << myBonus[i].position.x << " Pos Y =" << myBonus[i].position.y << endl;
+		//cout << "myBonus => Pos X =" << myBonus[i].position.x << " Pos Y =" << myBonus[i].position.y << endl;
 
 	}
 
-	//Main Character
-	mySnake.setup(0, 1, 1, widthLedWindow, heightFloor, 0, 0, numFloors, numWindowsPerFloor);
+    for (int i = 0; i < numActiveUsers; i++) {
+        //Main Character
+        mySnakes.push_back(characterClass());
+        mySnakes[i].setup(i, 1, 1, widthLedWindow, heightFloor, 0, 0, numFloors, numWindowsPerFloor);
+    }
+    
 	myDoor.setup(levelGame);
 }
 //--------------------------------------------------------------
 void ofApp::update() {
 
-
+    float energyAux = 0;
+    for (int i = 0; i < mySnakes.size(); i++) {
+        //Main Character
+        mySnakes[i].pointsEnergy;
+        energyAux++;
+    }
+    energyAux = energyAux / numActiveUsers;
+    
 	//TODO get the energy from all snakes
-	float energyAux = mySnake.pointsEnergy;
+	///float energyAux = mySnake.pointsEnergy;
 	//TODO map color interaction....from one color to another... 
 	float energyMap = ofMap(energyAux, 0, 10 * numActiveUsers, 0, 1);
 	//cout << "energyAux = " << energyAux << " then the energyMap = " << energyMap << endl;
 
-	ofRectangle auxSnakeRect = ofRectangle(mySnake.position.x*mySnake.size.x, mySnake.position.y*mySnake.size.y, mySnake.size.x * 1/*mySnake.scaleSnake*/, mySnake.size.y * 1/*mySnake.scaleSnake*/);
-	mySnake.update();
-	checkColisionDoor(auxSnakeRect, energyMap);
-	checkColisionEnergy(auxSnakeRect);
-	checkColisionEnemies(auxSnakeRect);
+    
+    for (int i = 0; i < mySnakes.size(); i++) {
+        //Main Character
+        mySnakes[i].update();
+  
+        ofRectangle auxSnakeRect = ofRectangle(mySnakes[i].position.x*mySnakes[i].size.x, mySnakes[i].position.y*mySnakes[i].size.y, mySnakes[i].size.x * 1/*mySnakes[i].scaleSnake*/, mySnakes[i].size.y * 1/*mySnakes[i].scaleSnake*/);
+
+        ///mySnake.update();
+        checkColisionDoor(auxSnakeRect, energyMap);
+        checkColisionEnergy(auxSnakeRect);
+        checkColisionEnemies(auxSnakeRect);
+    }
 
 	///////////////////////////////
 	//GAME
@@ -187,7 +210,43 @@ void ofApp::update() {
 	std::stringstream strm;
 	strm << "fps: " << ofGetFrameRate();
 	ofSetWindowTitle(strm.str());
+    
+    
+    //UPdate OSC
+    updateOSCReceive();
 
+}
+
+//-----------
+void ofApp::updateOSCReceive(){
+    // check for waiting messages
+    while(receiver.hasWaitingMessages()){
+
+        // get the next message
+        ofxOscMessage m;
+        receiver.getNextMessage(m);
+
+        // check for mouse moved message
+        if(m.getAddress() == "/clientPitch"){
+            // both the arguments are floats
+            float myId = m.getArgAsFloat(0);
+            float valuePitch = m.getArgAsFloat(1);
+            
+            if(myId == 0){
+                float  auxValue = ofMap(valuePitch, -100, 100, 0, 1);
+                mySnakes[myId].moveToYPos(auxValue);
+            }
+            else if(myId == 1){
+                float  auxValue = ofMap(valuePitch, -100, 100, 0, 1);
+                mySnakes[myId].moveToYPos(auxValue);
+            }
+            else if(myId == 2){
+                float  auxValue = ofMap(valuePitch, -100, 100, 0, 1);
+                mySnakes[myId].moveToYPos(auxValue);
+            }
+            
+        }
+    }
 }
 
 //-----------
@@ -306,7 +365,12 @@ void ofApp::drawGame() {
 
 
 	myDoor.draw();
-	mySnake.draw();
+    
+    for (int i = 0; i < mySnakes.size(); i++) {
+        mySnakes[i].draw();
+    }
+    ///myBonus[i].draw();
+	
 }
 
 //------------------------------------------------------------
@@ -320,7 +384,11 @@ void ofApp::swapAllColors(int idCol) {
 		myBonus[i].swapColors(idCol);
 	}
 
-	mySnake.swapColors(idCol);
+    for (int i = 0; i < mySnakes.size(); i++) {
+        mySnakes[i].swapColors(idCol);
+    }
+    //mySnake.swapColors(idCol);
+	
 }
 
 
@@ -331,25 +399,26 @@ void ofApp::keyPressed(int key) {
 	}
 	switch (key)
 	{
+            //TODO Alow 3 Users
 	case OF_KEY_DOWN:
-		mySnake.movePosUpByTheFace();
+		mySnakes[0].movePosUpByTheFace();
 		break;
 	case OF_KEY_UP:
-		mySnake.movePosDownByTheFace();
+		mySnakes[0].movePosDownByTheFace();
 		break;
 	case OF_KEY_RIGHT:
-		mySnake.increaseVelocity();
+		mySnakes[0].increaseVelocity();
 		break;
 	case OF_KEY_LEFT:
-		mySnake.decreaseVelocity();
+		mySnakes[0].decreaseVelocity();
 		break;
 	case '-':
-		mySnake.pointsEnergy--;
-		if (mySnake.pointsEnergy < 0) mySnake.pointsEnergy = 0;
+		mySnakes[0].pointsEnergy--;
+		if (mySnakes[0].pointsEnergy < 0) mySnakes[0].pointsEnergy = 0;
 		break;
 	case '+':
-		mySnake.pointsEnergy++;
-		if (mySnake.pointsEnergy > 10) mySnake.pointsEnergy = 10;
+		mySnakes[0].pointsEnergy++;
+		if (mySnakes[0].pointsEnergy > 10) mySnakes[0].pointsEnergy = 10;
 		break;
 	case 'c':
 		swapAllColors(0);
