@@ -116,7 +116,7 @@ void ofApp::setup() {
 	rgbaFbo.end();
 
 	//Syphon
-#ifdef _MAC
+#ifdef TARGET_OSX
 	mainOutputSyphonServer.setName("EscapeTower Spyhon Output");
 #else
 	//if (sender_.setup("ofxNDISender example")) {
@@ -176,6 +176,7 @@ void ofApp::update() {
 	//TODO for all Snakes in scene
 	ofRectangle auxSnake = ofRectangle(mySnake.position.x, mySnake.position.y, mySnake.size.x*mySnake.scaleSnake, mySnake.size.y*mySnake.scaleSnake);
 	bool bSnakeIsInside = myDoor.update(energyMap, auxSnake);
+	if(bSnakeIsInside)cout << "bSnakeIsInside = " << bSnakeIsInside << endl;
 
 	///////////////////////////////
 	//GAME
@@ -214,7 +215,7 @@ void ofApp::draw() {
 			drawGame();
 		}
 
-#ifdef _MAC
+#ifdef TARGET_OSX
 		mainOutputSyphonServer.publishScreen();
 #else
 

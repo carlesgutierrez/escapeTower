@@ -5,7 +5,7 @@
 #include "doorClass.h"
 
 
-#ifdef _MAC
+#ifdef TARGET_OSX
 #include "ofxSyphon.h"
 #else
 //#include "ofxNDISender.h"
@@ -97,13 +97,9 @@ class ofApp : public ofBaseApp, public ofxMidiListener{
         //// Conectivity
 		//Syphon
 		//ofxSyphonServer mainOutputSyphonServer;
-		#ifdef _MAC
+		#ifdef TARGET_OSX
 				ofxSyphonServer mainOutputSyphonServer;
 		#endif
-
-		#ifdef _MAC
-			ofxSyphonServer mainOutputSyphonServer;
-		#else
 			//ofxNDISender sender_;
 			////ofxNDISendVideo video_;
 		#endif
