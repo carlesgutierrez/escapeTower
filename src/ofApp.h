@@ -99,7 +99,7 @@ class ofApp : public ofBaseApp, public ofxMidiListener{
 		//ofxSyphonServer mainOutputSyphonServer;
 		#ifdef TARGET_OSX
 				ofxSyphonServer mainOutputSyphonServer;
-		#endif
+		#else
 			//ofxNDISender sender_;
 			////ofxNDISendVideo video_;
 		#endif
