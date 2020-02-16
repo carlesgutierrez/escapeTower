@@ -11,13 +11,13 @@ private:
 public:
 	ofVec2f position;
 	ofVec2f size;
-	int energy = 0;
+	float energy = 0;
     float scaleDoor = 2;//2 or 1
 	bool bRandomizedPos = false;
 
 	////
 	ofColor colorEnergy = ofColor::green;
-	ofColor colorNormal = ofColor::grey;
+	ofColor colorNormal = ofColor::whiteSmoke;
 	ofColor colorBorderPasive = ofColor::white;
 	ofColor colorBorderActive = ofColor::red;
 	
@@ -66,7 +66,8 @@ public:
 	}
 
 	//-------------------------------------------------
-	void update(float _energy4ThisDoor) {
+	bool update(float _energy4ThisDoor, ofRectangle _myRect) {
+		bool bSnakeInsideDoor = false;
 		energy = _energy4ThisDoor; // Copy and save it
 
 		if (ofGetElapsedTimeMillis() - lastUpdatePositionTime > updatePositionTime) {
@@ -76,7 +77,16 @@ public:
 
 		//TODO
 		//Update Colision with Snake or Array of Snakes!! Send a *?!
-		myColor = colorNormal.lerp(colorEnergy, energy);
+		ofRectangle auxDoorRect = ofRectangle(position.x, position.y, size.x, size.y);
+		if (_myRect.inside(auxDoorRect) == true) {
+			bSnakeInsideDoor = true;
+		}
+
+		//Color interaction
+		myColor = colorNormal.getLerped(colorEnergy, energy);
+		//cout << "myColor lerped = " << myColor << "from " << colorEnergy << " and energy = << " << energy << endl;
+	
+		return bSnakeInsideDoor;
 	}
 
 	//-------------------------------------------------

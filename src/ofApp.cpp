@@ -104,25 +104,8 @@ void ofApp::setup() {
 															//myEnemies.resize(numEnemies); // allocate space for 100 ints in vector
 															//myBonus.resize(numBonus);
 
-	for (int i = 0; i < numEnemies; i++) {
-		//myEnemies
-		myEnemies.push_back(characterClass());
-		myEnemies[i].setup(i, int(ofRandom(0, numWindowsPerFloor)), int(ofRandom(0, numFloors)), widthLedWindow, heightFloor, -3, 1, numFloors, numWindowsPerFloor);
-		cout << "Enemies => Pos X =" << myEnemies[i].position.x << " Pos Y =" << myEnemies[i].position.y << endl;
-	}
+	resetGame();
 
-	for (int i = 0; i < numBonus; i++) {
-		//myBonuts
-		myBonus.push_back(characterClass());
-		//TODO Check Filled Spaces First... If Ocupied then Change to another location. In godot That might be setup fixed positions per level
-		myBonus[i].setup(i, int(ofRandom(0, numWindowsPerFloor)), int(ofRandom(0, numFloors)), widthLedWindow, heightFloor, 3, 0, numFloors, numWindowsPerFloor);
-		cout << "myBonus => Pos X =" << myBonus[i].position.x << " Pos Y =" << myBonus[i].position.y << endl;
-
-	}
-
-	//Main Character
-	mySnake.setup(0, 1, 1, widthLedWindow, heightFloor, 0, 0, numFloors, numWindowsPerFloor);
-	myDoor.setup(levelGame);
 
 	//FBO Clears
 	myBKFadeColor = myBKFadeColor_Normal;
@@ -151,6 +134,33 @@ void ofApp::setup() {
 }
 
 //--------------------------------------------------------------
+void ofApp::resetGame() {
+
+	myEnemies.clear();
+	myBonus.clear();
+
+
+	for (int i = 0; i < numEnemies; i++) {
+		//myEnemies
+		myEnemies.push_back(characterClass());
+		myEnemies[i].setup(i, int(ofRandom(0, numWindowsPerFloor)), int(ofRandom(0, numFloors)), widthLedWindow, heightFloor, -3, 1, numFloors, numWindowsPerFloor);
+		cout << "Enemies => Pos X =" << myEnemies[i].position.x << " Pos Y =" << myEnemies[i].position.y << endl;
+	}
+
+	for (int i = 0; i < numBonus; i++) {
+		//myBonuts
+		myBonus.push_back(characterClass());
+		//TODO Check Filled Spaces First... If Ocupied then Change to another location. In godot That might be setup fixed positions per level
+		myBonus[i].setup(i, int(ofRandom(0, numWindowsPerFloor)), int(ofRandom(0, numFloors)), widthLedWindow, heightFloor, 3, 0, numFloors, numWindowsPerFloor);
+		cout << "myBonus => Pos X =" << myBonus[i].position.x << " Pos Y =" << myBonus[i].position.y << endl;
+
+	}
+
+	//Main Character
+	mySnake.setup(0, 1, 1, widthLedWindow, heightFloor, 0, 0, numFloors, numWindowsPerFloor);
+	myDoor.setup(levelGame);
+}
+//--------------------------------------------------------------
 void ofApp::update() {
 
 	/////////////////////////////
@@ -161,8 +171,11 @@ void ofApp::update() {
 	float energyAux = mySnake.pointsEnergy;
 	//TODO map color interaction....from one color to another... 
 	float energyMap = ofMap(energyAux, 0, 10 * numActiveUsers, 0, 1);
+	//cout << "energyAux = " << energyAux << " then the energyMap = " << energyMap << endl;
 
-	myDoor.update(energyMap);
+	//TODO for all Snakes in scene
+	ofRectangle auxSnake = ofRectangle(mySnake.position.x, mySnake.position.y, mySnake.size.x*mySnake.scaleSnake, mySnake.size.y*mySnake.scaleSnake);
+	bool bSnakeIsInside = myDoor.update(energyMap, auxSnake);
 
 	///////////////////////////////
 	//GAME

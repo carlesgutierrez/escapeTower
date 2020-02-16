@@ -20,6 +20,7 @@ class ofApp : public ofBaseApp, public ofxMidiListener{
 
 	public:
 		void setup();
+		void resetGame();
 		void update();
 		void draw();
 
