@@ -33,6 +33,7 @@ public:
 
 	//Snake Params
     float scaleSnake = 2;//2 or 1
+	float scaleRegularCharacter = 4;
 	int pointsEnergy = 0; // only for snake mode
 	float minTime2UpdatePos = 0.025;
 	int maxTime2UpdatePos = 300;
@@ -175,16 +176,34 @@ public:
 		}
 	}
 
+	////-------------------------------------------------
+	bool update(ofRectangle _myRect) {
+		bool bSnakeInsideDoor = false;
+
+		//TODO
+		//Update Colision with Snake or Array of Snakes!! Send a *?!
+		ofRectangle auxCharacterRect = ofRectangle(position.x*size.x, position.y*size.y, size.x*scaleRegularCharacter, size.y*scaleRegularCharacter);
+		if (auxCharacterRect.inside(_myRect) == true) { // if snake is inside de DOOR....
+			bSnakeInsideDoor = true;
+			cout << "Energy o bonus bSnakeInsideDoor !!! " << endl;
+		}
+		else {
+		}
+
+		return bSnakeInsideDoor;
+	}
+
 	//-------------------------------------------------
 	void draw() {
 		ofSetColor(myColor);
 
 		//TODO special draw
 		if (type == CHAR_ENEMY) {
-            ofDrawRectangle(position.x *size.x, position.y *size.y, size.x*scaleSnake, size.y*scaleSnake);}
+            ofDrawRectangle(position.x *size.x, position.y *size.y, size.x*scaleRegularCharacter, size.y*scaleRegularCharacter);}
 		else if (type == CHAR_BONUS) {
-            ofDrawRectangle(position.x *size.x, position.y *size.y, size.x*scaleSnake, size.y*scaleSnake);
+            ofDrawRectangle(position.x *size.x, position.y *size.y, size.x*scaleRegularCharacter, size.y*scaleRegularCharacter);
         }
+
 		else if (type == CHAR_SNAKE) {
             ofDrawRectangle(position.x *size.x, position.y *size.y, size.x*scaleSnake, size.y*scaleSnake);
         }

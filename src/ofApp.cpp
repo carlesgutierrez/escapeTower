@@ -163,9 +163,6 @@ void ofApp::resetGame() {
 //--------------------------------------------------------------
 void ofApp::update() {
 
-	/////////////////////////////
-	//Particles
-	mySnake.update();
 
 	//TODO get the energy from all snakes
 	float energyAux = mySnake.pointsEnergy;
@@ -173,10 +170,11 @@ void ofApp::update() {
 	float energyMap = ofMap(energyAux, 0, 10 * numActiveUsers, 0, 1);
 	//cout << "energyAux = " << energyAux << " then the energyMap = " << energyMap << endl;
 
-	//TODO for all Snakes in scene
-	ofRectangle auxSnake = ofRectangle(mySnake.position.x, mySnake.position.y, mySnake.size.x*mySnake.scaleSnake, mySnake.size.y*mySnake.scaleSnake);
-	bool bSnakeIsInside = myDoor.update(energyMap, auxSnake);
-	if(bSnakeIsInside)cout << "bSnakeIsInside = " << bSnakeIsInside << endl;
+	ofRectangle auxSnakeRect = ofRectangle(mySnake.position.x*mySnake.size.x, mySnake.position.y*mySnake.size.y, mySnake.size.x * 1/*mySnake.scaleSnake*/, mySnake.size.y * 1/*mySnake.scaleSnake*/);
+	mySnake.update();
+	checkColisionDoor(auxSnakeRect, energyMap);
+	checkColisionEnergy(auxSnakeRect);
+	checkColisionEnemies(auxSnakeRect);
 
 	///////////////////////////////
 	//GAME
@@ -190,6 +188,52 @@ void ofApp::update() {
 	strm << "fps: " << ofGetFrameRate();
 	ofSetWindowTitle(strm.str());
 
+}
+
+//-----------
+void ofApp::checkColisionEnergy(ofRectangle _snake) {
+	for (int i = 0; i < myBonus.size(); i++) {
+		bool bSnakeIsInside = myBonus[i].update(_snake);
+		if (bSnakeIsInside) {;
+			cout << "Energy colision" << endl;
+			cout << "bSnakeIsInside = " << bSnakeIsInside << endl;
+			cout << "Snake x = " << _snake.x << " y =" << _snake.y << "w = " << _snake.width << " h= " << _snake.height << endl;
+			cout << "Door x = " << myBonus[i].position.x*myBonus[i].size.x << " y =" << myBonus[i].position.y*myBonus[i].size.y << "w = " << myBonus[i].size.x*myBonus[i].scaleRegularCharacter << " h= " << myBonus[i].size.y*myBonus[i].scaleRegularCharacter << endl;
+		}
+	}
+}
+//-----------
+void ofApp::checkColisionEnemies(ofRectangle _snake) {
+	for (int i = 0; i < myEnemies.size(); i++) {
+		bool bSnakeIsInside = myEnemies[i].update(_snake);
+		if (bSnakeIsInside) {
+			cout << "ENEMY colision" << endl;
+			cout << "Energy colision" << endl;
+			cout << "bSnakeIsInside = " << bSnakeIsInside << endl;
+			cout << "Snake x = " << _snake.x << " y =" << _snake.y << "w = " << _snake.width << " h= " << _snake.height << endl;
+			cout << "Door x = " << myEnemies[i].position.x*myEnemies[i].size.x << " y =" << myEnemies[i].position.y*myEnemies[i].size.y << "w = " << myEnemies[i].size.x*myEnemies[i].scaleRegularCharacter << " h= " << myEnemies[i].size.y*myEnemies[i].scaleRegularCharacter << endl;
+		}
+	}
+}
+//-----------
+void ofApp::checkColisionDoor(ofRectangle _snake, float _energyMap) {
+	//TODO for all Snakes in scene
+	//
+	bool bSnakeIsInside = myDoor.update(_energyMap, _snake);
+
+	if (bSnakeIsInside) {
+		counterTicksInside++;
+		//cout << "bSnakeIsInside = " << bSnakeIsInside << endl;
+		//cout << "Snake x = " << auxSnake.x << " y =" << auxSnake.y << "w = " << auxSnake.width << " h= " << auxSnake.height << endl;
+		//cout << "Door x = " << myDoor.position.x << " y =" << myDoor.position.y << "w = " << myDoor.size.x << " h= " << myDoor.size.y << endl;
+		if (counterTicksInside > minCounterTicks) {
+			resetGame();
+			cout << "bSnakeIsInside = " << bSnakeIsInside << endl;
+		}
+	}
+	else {
+		//cout << "Not Inside!" << endl;
+	}
 }
 
 //--------------------------------------------------------------

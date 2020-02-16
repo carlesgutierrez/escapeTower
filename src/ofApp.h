@@ -22,6 +22,9 @@ class ofApp : public ofBaseApp, public ofxMidiListener{
 		void setup();
 		void resetGame();
 		void update();
+		void checkColisionEnergy(ofRectangle snake);
+		void checkColisionEnemies(ofRectangle snake);
+		void checkColisionDoor(ofRectangle snake, float energyMap);
 		void draw();
 
 		void drawFboGame();
@@ -46,6 +49,8 @@ class ofApp : public ofBaseApp, public ofxMidiListener{
 
 		//Control Vars
 		int levelGame = 0;
+		int counterTicksInside = 0;
+		int minCounterTicks = 30;
 
 		///////////////////
 		//Main Screen Vars

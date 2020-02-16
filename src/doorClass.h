@@ -77,8 +77,8 @@ public:
 
 		//TODO
 		//Update Colision with Snake or Array of Snakes!! Send a *?!
-		ofRectangle auxDoorRect = ofRectangle(position.x, position.y, size.x, size.y);
-		if (_myRect.inside(auxDoorRect) == true) {
+		ofRectangle auxDoorRect = ofRectangle(position.x, position.y, size.x*scaleDoor, size.y*scaleDoor);
+		if (auxDoorRect.inside(_myRect) == true) { // if snake is inside de DOOR....
 			bSnakeInsideDoor = true;
 		}
 
